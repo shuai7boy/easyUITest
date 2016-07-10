@@ -1,0 +1,5 @@
+G:\代码存放\Asp\easyUITest\soft_T\bin\Debug\soft_T.dll
+G:\代码存放\Asp\easyUITest\soft_T\bin\Debug\soft_T.pdb
+G:\代码存放\Asp\easyUITest\soft_T\obj\Debug\soft_T.csprojResolveAssemblyReference.cache
+G:\代码存放\Asp\easyUITest\soft_T\obj\Debug\soft_T.dll
+G:\代码存放\Asp\easyUITest\soft_T\obj\Debug\soft_T.pdb

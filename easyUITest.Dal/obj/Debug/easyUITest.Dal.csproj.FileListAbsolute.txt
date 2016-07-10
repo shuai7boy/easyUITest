@@ -1,0 +1,7 @@
+G:\代码存放\Asp\easyUITest\easyUITest.Dal\obj\Debug\easyUITest.Dal.csprojResolveAssemblyReference.cache
+G:\代码存放\Asp\easyUITest\easyUITest.Dal\bin\Debug\easyUITest.Dal.dll
+G:\代码存放\Asp\easyUITest\easyUITest.Dal\bin\Debug\easyUITest.Dal.pdb
+G:\代码存放\Asp\easyUITest\easyUITest.Dal\bin\Debug\easyUITest.Model.dll
+G:\代码存放\Asp\easyUITest\easyUITest.Dal\bin\Debug\easyUITest.Model.pdb
+G:\代码存放\Asp\easyUITest\easyUITest.Dal\obj\Debug\easyUITest.Dal.dll
+G:\代码存放\Asp\easyUITest\easyUITest.Dal\obj\Debug\easyUITest.Dal.pdb

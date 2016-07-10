@@ -1,0 +1,56 @@
+﻿@model easyUITest.Model.UserMsg
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+    <script src="~/Content/jquery.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        $(function () {
+
+
+        });
+        function afterEdit(_data) {
+            window.parent.afterEdit(_data);
+        }
+        function EditSubmit() {
+            $("form").submit();
+        }
+    </script>
+</head>
+<body>
+    
+        @using (Ajax.BeginForm("Edit", "Home", new AjaxOptions() { OnSuccess = "afterEdit" }))
+        {
+            <table>
+                <tr>
+                    <td>用户ID:</td>
+                    <td>
+                        @Model.UserId
+                    <input type="hidden" value="@Model.UserId" name="UserId" />
+                </td>
+            </tr>
+            <tr>
+                <td>用户名:</td>
+                <td>@Html.TextBoxFor(c=>c.UserName)</td>
+            </tr>
+            <tr>
+                <td>密码:</td>
+                <td><input type="password" name="UserPwd" value="      " />
+                    <input type="hidden" name="UserPwdOld" value="@Model.UserPwd" /></td>
+            </tr>
+            <tr>
+                <td>备注:</td>
+                <td>@Html.TextAreaFor(c => c.UserRemark)</td>
+            </tr>            
+        </table>
+        }
+ 
+</body>
+</html>

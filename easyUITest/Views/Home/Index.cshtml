@@ -1,0 +1,202 @@
+﻿@model easyUITest.Model.UserMsg
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>后台首页</title>
+    <link href="~/Content/themes/default/easyui.css" rel="stylesheet" />
+    <link href="~/Content/themes/icon.css" rel="stylesheet" />   
+
+    <script src="~/Content/jquery-1.7.1.min.js"></script>
+    <script src="~/Content/jquery.easyui.min.js"></script>   
+    <script src="~/Content/locale/easyui-lang-zh_CN.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        $(function () {
+            loadMsg();
+            $("#addDiv").hide();
+            $("#editDiv").hide();
+            //-------根据条件进行查询操作
+            $("#btnSelect").click(function () {
+                //获取查询数据
+                var txtId = $("#selectId").val();
+                var txtName = $("#selName").val();
+                //向服务器请求
+                loadMsg({
+                    'sId': txtId,
+                    'sName':txtName
+                });
+            });
+        });
+        function loadMsg(queryParam1) {
+            $("#tt").datagrid({
+                url: '/Home/GetPageList2',
+                title: '用户登陆信息',
+                width: 700,
+                height: 400,
+                fitColumns: true,
+                //idField: '主键列名',
+                loadMsg: '正在加载用户的信息...',
+                pagination: true,
+                singleSelect: false,                
+                pageSize: 10,
+                pageNumber: 1,
+                pageList: [10, 20, 30],
+                queryParams: queryParam1,
+                columns: [[
+						{ field: 'ck', checkbox: true, align: 'left', width: 50 },
+						{ field: 'UserId', title: '编号', width: 80 },
+						{ field: 'UserName', title: '登陆名', width: 120 },
+						{ field: 'UserPwd', title: '登陆密码', width: 120 },
+                        { field: 'UserRemark', title: '备注', width: 120 }
+
+                ]],
+                toolbar: [{
+                    id: 'toolbarAdd',
+                    text: '添加',
+                    iconCls: 'icon-add',
+                    handler: diaLog
+                }, {
+                    id: 'toolbarEdit',
+                    text: '修改',
+                    iconCls: 'icon-edit',
+                    handler: EditShow
+                }]
+            });
+        }
+        function diaLog() {
+            
+            $("#addDiv").show();
+            $("#addDiv").dialog({
+                title: "添加用户",
+                collapsible: true,
+                minimizable: true,
+                maximizable: true,
+                resizable: true,
+                modal:true,//显示遮罩效果
+                buttons: [{
+                    text: "添加",
+                    iconCls: "icon-add",
+                    handler: function () {
+                        $("#addDiv form").submit();
+                    }
+                }, {
+                    text: "取消",
+                    iconCls: "icon-cancel",
+                    handler: function () {
+                        $("#addDiv").dialog("close");
+                    }
+                }]
+            });
+        }
+        function afterAdd(_data)
+        {
+            if (_data=="ok") {
+                $("#tt").datagrid("load"); //刷新
+                $("#addDiv").dialog("close");
+            } else {
+                alert(_data);
+            }
+        }
+        //------显示编辑页面
+        function EditShow() {           
+            //获取表格中选择的项
+            var items = $("#tt").datagrid('getSelections');           
+            if (items.length != 1) {
+                $.messager.alert("警告!", "请选择一条修改的记录");
+                return; 
+            }
+            var id = items[0]["UserId"];
+            
+            $("#editDiv").show();
+            //修改src属性 指向修改界面
+            $("#editDiv iframe").attr("src", '@Url.Action("Edit", "Home")?id=' + id);
+            //以窗体的形式显示修改界面
+            $("#editDiv").dialog({
+                title: "修改用户",
+                collapsible: true,
+                minimizable: true,
+                maximizable: true,
+                resizable: true,
+                modal: true,//显示遮罩效果
+                buttons: [{
+                    text: "保存修改",
+                    iconCls: "icon-add",
+                    handler: function () {
+                        // $("#editDiv form").submit();//因为要提交的是嵌套页面，所以不能这么写
+                        $("#editDiv iframe")[0].contentWindow.EditSubmit();//调用子类的提交方法
+                    }
+                }, {
+                    text: "取消",
+                    iconCls: "icon-cancel",
+                    handler: function () {
+                        $("#editDiv").dialog("close");
+                    }
+                }]
+            });
+
+        }
+        //-----编辑后事件  让子页面调用并将参数传递过来
+        function afterEdit(_data) {
+            //根据子窗口传递的值进行处理
+            if (_data=="ok") {
+                $("#tt").datagrid("reload");//刷新当前页
+                $("#editDiv").dialog("close");//关闭当前窗体
+            } else {              
+                $.messager.alert("提示!",_data);
+            }
+        }
+        
+        
+        
+    </script>
+</head>
+<body>
+    <!--查询-->
+    <div id="selDiv">
+        <table>
+            <tr>
+                <td>编号:</td>
+                <td><input type="text" name="selectId" id="selectId" /></td>
+                <td>用户名:</td>
+                <td><input type="text" name="selName" id="selName" /></td>
+                <td><input type="button" id="btnSelect" value="查询"/></td>
+            </tr>         
+     
+        </table>
+    </div>
+    <!--用户列表-->
+    <div>
+        <table id="tt"></table>
+    </div>
+    <!--用户添加-->
+    <div id="addDiv">
+        @using (Ajax.BeginForm("Add", "Home", new AjaxOptions() { OnSuccess = "afterAdd" }))
+        {
+            <table>
+                <tr>
+                    <td>用户名:</td>
+                    <td>@Html.TextBoxFor(c => c.UserName)</td>
+                </tr>
+                <tr>
+                    <td>密码:</td>
+                    <td>@Html.PasswordFor(c => c.UserPwd)</td>
+                </tr>
+                <tr>
+                    <td>备注:</td>
+                    <td>@Html.TextAreaFor(c => c.UserRemark)</td>
+                </tr>               
+         </table>
+        }
+    </div>
+    <!--用户修改-->
+    <div id="editDiv">
+        <iframe src="/Error.html" frameborder="0" width="100%" height="100%"></iframe>
+    </div>
+</body>
+</html>
